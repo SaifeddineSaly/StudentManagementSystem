@@ -1,0 +1,153 @@
+{% extends 'staff_template/base_template.html' %}
+
+{% block page_title %}
+    Leave Report and Apply for Leave
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Apply For Leave</h3>
+                    </div>
+                    <!-- /.card-header -->
+
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+                            
+                    <form method="POST" action="{% url 'staff_apply_leave_save' %}">
+                        {% csrf_token %}
+                        <div class="card-body">
+                           
+                            <div class="form-group">
+                                <label>Leave Date        </label>
+                                <input type="date" name="leave_date" class="form-control" placeholder="Leave Date" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Leave Reason</label>
+                                <textarea name="leave_message" class="form-control" rows="6" placeholder="Leave Message"></textarea>
+                            </div>
+
+
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Apply for Leave</button>
+                        </div>
+
+                    </form>
+
+                    </div>
+                    <!-- /.card -->
+
+
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <h3 class="card-title">Leave Apply History</h3>
+                        </div>
+
+                        <div class="card-body">
+                           <div class="table-responsive">
+                                <table class="table">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>#ID</th>
+                                        <th>Leave Date</th>
+                                        <th>Leave Message</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    </thead>
+                                    {% comment %}
+                                        {% for leave in leave_data %}
+                                    {% endcomment %}
+                                    {% for leave in leave %}
+                                    <tr>
+                                        <td>{{ leave.id }}</td>
+                                        <td>{{ leave.leave_date }}</td>
+                                        <td>{{ leave.leave_message }}</td>
+                                        <td>
+                                            {% if leave.leave_status == 1 %}
+                                                <span class="alert alert-success">Approved</span>
+                                            {% elif leave.leave_status == 2 %}
+                                                <span class="alert alert-danger">Rejected</span>
+                                            {% else %}
+                                                <span class="alert alert-warning">Pending</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+            </div>
+            <!-- Pagination -->
+        <div class="pagination justify-content-end">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+            {% if leave.has_previous %}
+                <li class="page-item"><a href="?page=1" class="page-link">&laquo First</a></li>
+                <li class="page-item"><a href="?page={{leave.previous_page_number}}" class="page-link">Previous</a></li>
+            {% endif %}
+
+            <!-- <li class="page-item"><a href="#" class="page-link">Page {{ leave.number }} of {{ leave.paginator.num_pages }}</a></li> -->
+            {% for i in nums %}
+            <li class="page-item"><a class="page-link" href="?page={{forloop.counter}}">{{ forloop.counter }}</a></li>
+            {% endfor %}
+
+            {% if leave.has_next %}
+                <li class="page-item"><a href="?page={{ leave.next_page_number}}" class="page-link">Next</a></li>
+                <li class="page-item"><a href="?page={{leave.paginator.num_pages}}" class="page-link">Last &raquo</a></li>
+            {% endif %}
+            </ul>
+            </nav>
+        </div>
+            <!-- End Pagination -->
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}
+
+{% block custom_js %}
+
+{% endblock custom_js %}

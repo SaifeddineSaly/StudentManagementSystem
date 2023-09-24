@@ -1,0 +1,182 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block h4_title %} | Manage Professeur {% endblock %}
+
+{% block page_title %}
+    Manage Professor
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <a class="btn btn-primary" href="{% url 'add_staff' %}" role="button">+ Add Professor</a> <br/>&nbsp;
+
+            {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+                                
+
+            <div class="row">
+
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Professor Details</h3>
+
+                            <div class="card-tools">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                <input type="text" id="table_search" name="table_search" class="form-control float-right" placeholder="Search">
+
+                                <div class="input-group-append">
+                                <button type="submit" id="search_btn" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                            <thead>
+                                <tr>
+                                <th>ID</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                                <th>Major</th>
+                                <th>Course</th>
+                                <th>Last Login</th>
+                                <th>Hiring Date</th>
+                                <th>Action</th>
+                                </tr>
+                            </thead>
+                                <tbody>
+                                    {% for staff in staff %}
+                                    <tr>
+                                        <td>{{ staff.admin.id }}</td>
+                                        <td>{{ staff.admin.first_name }}</td>
+                                        <td>{{ staff.admin.last_name }}</td>
+                                        <td>{{ staff.admin.username }}</td>
+                                        <td>{{ staff.admin.email }}</td>
+                                        <td>{{ staff.address }}</td>
+                                        <!-- <td>{{ staff.major }}</td> -->
+                                        <!-- <td>{{ staff.course }}</td> -->
+                                        <td>
+                                            {% for course in course %}
+                                                {% if course.id == staff.course_id_id %}
+                                                    {{ course.course_name }}
+                                                    {% else %}
+                                                    {{ null }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            {% for subject in subject %}
+                                                {% if staff.admin_id == subject.staff_id_id %}
+                                                    {{ subject.subject_name }}    
+                                                {% endif %}
+                                            {% endfor %}
+                                            
+                                        </td>
+                                        <td>{{ staff.admin.last_login }}</td>
+                                        <td>{{ staff.hiring_data }}</td>
+                                        <td>
+                                            <a href="{% url 'edit_staff' staff.admin.id %}" class="btn btn-success">Edit</a> 
+                                            <a href="{% url 'delete_staff' staff.admin.id %}" class="btn btn-danger">Delete</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+                <!-- Pagination -->
+        <div class="pagination justify-content-end">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+            {% if staff.has_previous %}
+                <li class="page-item"><a href="?page=1" class="page-link">&laquo First</a></li>
+                <li class="page-item"><a href="?page={{staff.previous_page_number}}" class="page-link">Previous</a></li>
+            {% endif %}
+
+            <!-- <li class="page-item"><a href="#" class="page-link">Page {{ staff.number }} of {{ staff.paginator.num_pages }}</a></li> -->
+            {% for i in nums1 %}
+            <li class="page-item"><a class="page-link" href="?page={{forloop.counter}}">{{ forloop.counter }}</a></li>
+            {% endfor %}
+
+            {% if staff.has_next %}
+                <li class="page-item"><a href="?page={{ staff.next_page_number}}" class="page-link">Next</a></li>
+                <li class="page-item"><a href="?page={{staff.paginator.num_pages}}" class="page-link">Last &raquo</a></li>
+            {% endif %}
+            </ul>
+            </nav>
+        </div>
+            <!-- End Pagination -->
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}
+  {% block custom_js %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <script>
+        $(document).ready(function() {
+            $('#search_btn').click(function() {
+                performSearch();
+            });
+        
+            $('#table_search').keyup(function(event) {
+                if (event.keyCode === 13 || $(this).val().trim() === '') { // Check if Enter key is pressed or search input is empty
+                    performSearch();
+                }
+            });
+        
+            function performSearch() {
+                var searchText = $('#table_search').val().toLowerCase().trim();
+                if (searchText === '') {
+                    $('tbody tr').show();
+                } else {
+                    $('tbody tr').each(function() {
+                        var rowData = $(this).text().toLowerCase();
+                        if (rowData.indexOf(searchText) === -1) {
+                            $(this).hide();
+                        } else {
+                            $(this).show();
+                        }
+                    });
+                }
+            }
+        });
+        </script>
+  {% endblock custom_js %}

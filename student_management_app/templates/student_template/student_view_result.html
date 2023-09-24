@@ -1,0 +1,118 @@
+{% extends 'student_template/base_template.html' %}
+
+{% block page_title %}
+    Result
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Result</h3>
+                        </div>
+
+                        <div class="card-body">
+                           <div class="table-responsive">
+                                <table class="table">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>#ID</th>
+                                        <th>Course</th>
+                                        <th>Assignments Marks</th>
+                                        <th>Exam Marks</th>
+                                        <th>status</th>
+                                    </tr>
+                                    </thead>
+                                    
+                                    {% for row in student_result %}
+                                    <tr>
+                                        <td>{{ row.id }}</td>
+                                        <td>{{ row.subject_id.subject_name }}</td>
+                                        <td>{{ row.subject_assignment_marks }}</td>
+                                        <td>{{ row.subject_exam_marks }}</td>
+                                        <td>
+                                            {% if row.subject_exam_marks >= 40 %}
+                                                <span class="alert alert-success">Pass</span>
+                                            {% else %}
+                                                <span class="alert alert-danger">Fail</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}
+
+{% block custom_js %}
+
+<script>
+    // JavaScript function to handle the deletion when the link is clicked
+    function deleteData(event, dataId) {
+      event.preventDefault(); // Prevent the default link behavior
+  
+      // Send an AJAX request to delete the data
+      fetch(`/delete-data-2/${dataId}/`, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}', // Add the CSRF token for security
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          // Success! You can now redirect to the target page
+          window.location.href = event.target.getAttribute('href');
+        } else {
+          // Handle the error if needed
+          console.error('Error occurred during deletion.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+
+    // JavaScript function to handle the deletion when the link is clicked
+    function deleteData_notification_result(event, dataId) {
+      event.preventDefault(); // Prevent the default link behavior
+  
+      // Send an AJAX request to delete the data
+      fetch(`/delete-data-result/${dataId}/`, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}', // Add the CSRF token for security
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          // Success! You can now redirect to the target page
+          window.location.href = event.target.getAttribute('href');
+        } else {
+          // Handle the error if needed
+          console.error('Error occurred during deletion.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+</script>
+  
+{% endblock custom_js %}

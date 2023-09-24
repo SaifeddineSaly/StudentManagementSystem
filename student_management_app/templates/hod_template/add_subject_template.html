@@ -1,0 +1,170 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block h4_title %} | Add Course {% endblock %}
+
+{% block page_title %}
+    Add Course
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add Course</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form role="form" method="POST" action="{% url 'add_subject_save' %}">
+                        {% csrf_token %}
+
+                        
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+                            
+
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Course Name </label>
+                                <input type="text" class="form-control" name="subject" placeholder="Enter Course">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Major </label>
+                                <select class="form-control" name="course" id="courseSelect">
+                                    {% for course in courses %}
+                                        <option value="{{ course.id }}">{{ course.course_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Professor </label>
+                                <select class="form-control" name="staff" id="staffSelect">
+                                        {% for staff in staffs %}
+                                            <option value="{{ staff.id }}">{{ staff.first_name }} {{ staff.last_name }}</option>
+                                        {% endfor %}
+                                        {% comment %}
+                                        <option value="-1">Select Professor</option>
+                                        {% endcomment %}
+                                </select>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Add Course</button>
+                        </div>
+                    </form>
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}
+
+  {% block custom_js %}
+  <!-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const majorSelect = document.getElementById('courseSelect');
+        const courseSelect = document.getElementById('staffSelect');
+
+        // Function to update the options of the second select based on the selected major
+        function updateCourseOptions() {
+            const selectedMajorId = majorSelect.value;
+            console.log(selectedMajorId);
+            if (selectedMajorId === "-1") {
+                courseSelect.innerHTML = '<option value="-1">Select Professor</option>';
+                return;
+            }
+            // Make an AJAX request to get the courses for the selected major
+            fetch(`/get_staffs_for_course/?course_id=${selectedMajorId}`)
+                .then(response => response.json())
+                .then(data => {
+                    courseSelect.innerHTML = ''; // Clear existing options
+
+                    // Add Select Course After Change of first Option:
+                    const option0 = document.createElement('option');
+                    option0.value = -1;
+                    option0.textContent = 'Select Professor';
+                    courseSelect.appendChild(option0);
+                    // Add new options to the second select:
+                    for (const course of data) {
+                        const option = document.createElement('option');
+                        option.value = course.id;
+                        option.textContent = course.subject_name;
+                        courseSelect.appendChild(option);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Attach an event listener to the first select to trigger the update of the second select
+        majorSelect.addEventListener('change', updateCourseOptions);
+
+        // Call the function initially to populate the second select based on the initial value of the first select
+        updateCourseOptions();
+    });
+</script> -->
+<!-- <script>
+  function updateStaffs() {
+    var selectedCourseId = document.getElementById('courseSelect').value;
+    var staffSelect = document.getElementById('staffSelect');
+  
+    // Clear the current options in the staff select
+    while (staffSelect.options.length > 1) {
+      staffSelect.remove(1);
+    }
+  
+    // Fetch the staffs for the selected course using AJAX or any other method
+    // Replace the URL with the appropriate URL to fetch staffs for the selected course
+    fetch(`/api/get_staffs_for_course/?course_id=${selectedCourseId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        // Add the fetched staffs as options in the staff select
+        data.forEach((staff) => {
+          var option = document.createElement('option');
+          option.value = staff.id;
+          option.text = staff.admin.first_name + ' ' + staff.admin.last_name;
+          staffSelect.appendChild(option);
+        });
+      })
+      .catch((error) => {
+        console.error('Error fetching staffs:', error);
+      });
+  }
+  </script> -->
+{% endblock custom_js %}

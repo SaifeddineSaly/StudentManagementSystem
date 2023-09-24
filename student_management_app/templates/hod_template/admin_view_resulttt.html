@@ -1,0 +1,535 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    View Result
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="row">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="dropdown col-md-4">
+                            <select id="major_id" name="major" class="form-select bg-success text-white form-select btn btn-secondary dropdown-toggle">
+                                {% comment %}
+                                onchange="this.form.submit()"
+                                {% endcomment %}
+                                <option value="-1">Select Major</option>
+                                {% for course in courses %}
+                                    <option value="{{course.id}}">{{course.course_name}}</option>
+                                {% endfor %}
+                            </select>
+                            {% comment %}
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Select Major
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                {% for course in courses %}
+                                    <!-- <li class="dropdown-item">{{course.course_name}}</li> -->
+                                    <!-- <a class="dropdown-item" href="#">{{course.course_name}}</a> -->
+                                    <a class="dropdown-item first-option {% if course.course_name == selected_option %}selected{% endif %}" href="#" data-id="{{ course.id }}">{{ course.course_name }}</a>
+                                {% endfor %}    
+                            </div>
+                            {% endcomment %}
+                        </div>
+                    </form>  
+                        <div class="dropdown mb-4 col-md-2">
+                            <select id="course" name="course" class="form-select bg-success text-white form-select btn btn-secondary dropdown-toggle">
+                                <option value="-1">Select Course</option>
+                            </select>
+
+                            {% comment %}
+                            <select id="course" name="course" class="form-select bg-success text-white form-select btn btn-secondary dropdown-toggle">
+                                <!-- onchange="this.form.submit()" -->
+                                <option value="-1">Select Cours</option>
+                                {% for subject in course %}
+                                    <option value="{{subject.id}}">{{subject.subject_name}}</option>
+                                {% endfor %}
+                            </select>
+                            {% endcomment %}
+
+                            {% comment %}
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Select Cours
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                
+                            </div>
+                            {% endcomment %}
+                        </div>
+                    </div>
+                    
+
+                    <div class="card card-primary">
+                    <!-- <div class="card-header">
+                        <h3 class="card-title">Students Results</h3>
+                    </div> -->
+                    <!-- /.card-header -->
+
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- general form elements -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Students Results</h3>
+
+                                        <div class="card-tools">
+                                        <div class="input-group input-group-sm" style="width: 150px;">
+                                            <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+            
+                                            <div class="input-group-append">
+                                            <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.card-header -->
+
+                                    <!-- DataTable HTML template -->
+
+                                <div class="card-body table-responsive p-0">
+                                    <table id="student_results" class="display table table-hover text-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th>Student ID</th>
+                                                <th>Student Name</th>
+                                                <th>Major</th>
+                                                <!-- Add dynamic headers for each subject -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Data will be populated dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                    <!-- Finish DataTable  -->
+
+                                    <!-- Last Dance -->
+                                    <!-- <div class="card-body table-responsive p-0">
+                                        <table class="table table-hover text-nowrap">
+                                            <thead>
+                                                <tr style="text-align: center;">
+                                                    <th>ID</th>
+                                                    <th>Name</th>
+                                                    <th>Major</th> -->
+                                                    <!-- Last Dance -->
+
+                                                    <!-- <th>Object Oriented Desin</th> -->
+                                                    <!-- Last Dance -->
+                                                    <!-- <th>Network Administrator</th> -->
+                                                    <!-- Last Dance -->
+                                                    <!-- <th>Business Law</th> -->
+                                                    <!-- <th>Stage</th> -->
+                                                    <!-- Last Dance -->
+                                                    <!-- <th>Total</th>
+                                                </tr>
+                                            </thead>
+                                        <tbody>
+                                            <tr style="text-align: center;">
+                                                <th>1</th>
+                                                <th>Saly</th>
+                                                <th>Business Computer</th> -->
+                                                <!-- Last Dance -->
+                                                <!-- <th style="color: green;">70</th> -->
+                                                <!-- <th style="color: green;">100</th> -->
+                                                <!-- Last Dance -->
+                                                <!-- <th style="color: green;">80</th> -->
+                                                <!-- Last Dance -->
+                                                <!-- <th style="color: green;">90</th> -->
+                                                <!-- Last Dance -->
+                                                <!-- <th style="color: green;">80</th>
+                                            </tr>
+                                            <tr style="text-align: center;">
+                                                <th>2</th>
+                                                <th>Mohamad</th>
+                                                <th>Communication Network</th> -->
+                                                <!-- Last Dance -->
+                                                <!-- <th style="color: green;">50</th> -->
+                                                <!-- <th style="color: green;">70</th> -->
+                                                <!-- Last Dance -->
+                                                <!-- <th style="color: green;">60</th> -->
+                                                <!-- Last Dance -->
+                                                <!-- <th style="color: red;">40</th> -->
+                                                <!-- Last Dance -->
+                                                <!-- <th style="color: green;">60</th>
+                                            </tr> -->
+                                            <!-- Last Dance -->
+                                            <!-- {% for subject in subjects %}
+                                            <tr>
+                                            <td>{{ subject.id }}</td>
+                                            <td>{{ subject.course_id.course_name }}</td>
+                                            <td>{{ subject.subject_name }}</td>
+                                            <td>{{ subject.staff_id.first_name }} {{ subject.staff_id.last_name }}</td>
+                                            <td>{{ subject.created_at }}</td>
+                                            <td>{{ subject.updated_at }}</td>
+                                            <td>
+                                                <a href="{% url 'edit_subject' subject.id %}" class="btn btn-success">Edit</a> 
+                                                <a href="{% url 'delete_subject' subject.id %}" class="btn btn-danger">Delete</a>
+                                            </td>
+                                            </tr>
+                                            {% endfor %} -->
+
+                                            <!-- Last dance  -->
+                                        <!-- </tbody>
+                                        </table>
+                                    </div> -->
+                                    <!-- Last dance -->
+
+                                    <!-- /.card-body -->
+                                    </div>
+                                <!-- /.card -->
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                        {% comment %} Displaying Students Here {% endcomment %}
+
+                        <!-- <div class="card-footer" id="student_data">
+                        </div>  -->
+
+                </div>
+                    <!-- /.card -->
+
+            </div>
+        </div><!-- /.container-fluid -->
+</section>
+
+  {% endblock main_content %}
+
+{% block custom_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const majorSelect = document.getElementById('major_id');
+        const courseSelect = document.getElementById('course');
+        const dataTable = $('#student_results').DataTable(); // Replace 'student_results' with your DataTable ID
+
+        // Function to update the options of the second select based on the selected major
+        function updateCourseOptions() {
+            const selectedMajorId = majorSelect.value;
+            if (selectedMajorId === "-1") {
+                courseSelect.innerHTML = '<option value="-1">Select Course</option>';
+                dataTable.clear().draw(); // Clear DataTable when the first select is reset
+                return;
+            }
+
+            // Make an AJAX request to get the courses for the selected major
+            fetch(`/get_subjects_for_course/?major__id=${selectedMajorId}`)
+                .then(response => response.json())
+                .then(data => {
+                    courseSelect.innerHTML = '<option value="-1">Select Course</option>'; // Clear existing options
+
+                    // Add new options to the second select
+                    for (const subject of data.subjects) {
+                        const option = document.createElement('option');
+                        option.value = subject.id;
+                        option.textContent = subject.subject_name;
+                        courseSelect.appendChild(option);
+                    }
+
+                    // Update the DataTable with student result data for the selected course
+                    dataTable.clear().draw();
+                    for (const student of data.students) {
+                        const rowData = [student.id, student.student_name, student.major]; // Add Student ID and Major
+                        for (const subject of data.subjects) {
+                            const result = data.results[student.id] && data.results[student.id][subject.id];
+                            rowData.push(result ? result.exam_marks + ' / ' + result.assignment_marks : '');
+                        }
+                        dataTable.row.add(rowData).draw();
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Attach an event listener to the first select to trigger the update of the second select and DataTable
+        majorSelect.addEventListener('change', updateCourseOptions);
+
+        // Call the function initially to populate the second select and DataTable based on the initial value of the first select
+        updateCourseOptions();
+    });
+</script>
+
+
+<!-- Working 100% -->
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const majorSelect = document.getElementById('major_id');
+        const courseSelect = document.getElementById('course');
+
+        // Function to update the options of the second select based on the selected major
+        function updateCourseOptions() {
+            const selectedMajorId = majorSelect.value;
+            console.log(selectedMajorId);
+            if (selectedMajorId === "-1") {
+                courseSelect.innerHTML = '<option value="-1">Select Course</option>';
+                return;
+            }
+
+            // Make an AJAX request to get the courses for the selected major
+            fetch(`/get_courses_for_major/?major_id=${selectedMajorId}`)
+                .then(response => response.json())
+                .then(data => {
+                    courseSelect.innerHTML = ''; // Clear existing options
+
+                    // Add new options to the second select
+                    for (const course of data) {
+                        const option = document.createElement('option');
+                        option.value = course.id;
+                        option.textContent = course.subject_name;
+                        courseSelect.appendChild(option);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Attach an event listener to the first select to trigger the update of the second select
+        majorSelect.addEventListener('change', updateCourseOptions);
+
+        // Call the function initially to populate the second select based on the initial value of the first select
+        updateCourseOptions();
+    });
+</script> -->
+
+<!-- <script>
+    // JavaScript to handle the AJAX request
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstSelect = document.getElementById('major');
+        const secondSelect = document.getElementById('course');
+
+        // Function to fetch options for the second select based on the first select value
+        function updateSecondSelectOptions() {
+            const selectedValue = firstSelect.value;
+            const url = `/get_second_select_options/?first_select_value=${selectedValue}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    // Clear existing options
+                    secondSelect.innerHTML = '';
+
+                    // Add new options to the second select
+                    for (const key in data) {
+                        const option = document.createElement('option');
+                        option.value = key;
+                        option.textContent = data[key];
+                        secondSelect.appendChild(option);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Attach an event listener to the first select to trigger the update of the second select
+        firstSelect.addEventListener('change', updateSecondSelectOptions);
+
+        // Initial call to populate the second select based on the initial value of the first select
+        updateSecondSelectOptions();
+    });
+</script> -->
+
+
+<!-- <script>
+  $(document).ready(function() {
+    $('#major').on('change', function() {
+      var selectedValue = $(this).val();
+      console.log(selectedValue);
+      // Send the selected value to Django backend using AJAX
+      $.ajax({
+        url: 'http:127.0.0.1:8000/process_selected_value/',
+        type: 'POST',
+        data: {
+          'selected_value': selectedValue,
+        },
+        success: function(response) {
+          // Clear the existing options of select2
+          $('#course option').remove();
+
+          // Populate the options of select2 with received data
+          $.each(response.data, function(index, item) {
+            $('#course').append($('<option>', {
+              value: item.id,
+              text: item.name
+            }));
+          });
+        },
+        error: function(xhr, status, error) {
+          // Handle the error if AJAX request fails
+        }
+      });
+    });
+  });
+</script> -->
+
+
+<!-- <script>
+  $(document).ready(function() {
+    $('#mySelect').on('change', function() {
+      var selectedValue = $(this).val();
+      console.log(selectedValue)
+      // Send the selected value to Django backend using AJAX
+      $.ajax({
+        url: 'http://127.0.0.1:8000/admin_view_result/',
+        type: 'POST',
+        data: {
+          'selected_value': selectedValue,
+          // Additional data if needed
+        },
+        success: function(response) {
+          
+        },
+        error: function(xhr, status, error) {
+          
+        }
+      });
+    });
+  });
+</script> -->
+
+
+<script>
+    $(document).ready(function(){
+        
+
+        //Fetching Attendance Date
+
+        $("#fetch_attendance").click(function(){
+                var subject = $("#subject").val()
+                var session_year_id = $("#session_year_id").val()
+                //console.log(subject)
+                //console.log(session_year_id)
+
+                $.ajax({
+                    url:'{% url 'admin_get_attendance_dates' %}',
+                    type:'POST',
+                    data:{subject:subject, session_year_id:session_year_id},
+                })
+
+                
+                .done(function(response){
+                    var json_data = JSON.parse(response);
+                    if(json_data.length>0)
+                    {
+                        var html_data = "";
+                        for (key in json_data)
+                        {
+                            html_data+="<option value='"+ json_data[key]["id"] +"'>"+ json_data[key]["attendance_date"] +"</option>"
+                        }
+                        $("#error_attendance").html("");
+                        $("#error_attendance").hide();
+                        $("#attendance_block").show();
+                        $("#fetch_student_block").show();
+                        $("#attendance_date").html(html_data);
+                        //console.log(response)
+                        //alert("Something")
+                    }
+                    else
+                    {
+                        $("#error_attendance").html("No Attendance Data Found.");
+                        $("#error_attendance").show();
+                        $("#attendance_block").hide();
+                        $("#fetch_student_block").hide();
+                        $("#attendance_date")="" //Empty the Date Dropdown also
+                    }
+                    
+                })
+
+                .fail(function(){
+                    alert("Error in getting Attendance Dates.")
+                    $("#error_attendance").html("");
+                    $("#fetch_student_block").hide();
+                    $("#attendance_block").hide();
+                });
+
+                
+        })
+
+        // Now Working on Fetch Student after attendance date selected
+        $("#fetch_student").click(function(){
+
+            // Displaying Students Based on Staff, Course and Session Enrolled
+
+            //var subject=$("#subject").val()
+            //var session_year=$("#session_year").val()
+            var attendance_date=$("#attendance_date").val()
+
+            $.ajax({
+                url:'{% url 'admin_get_attendance_student' %}',
+                type:'POST',
+                data:{attendance_date:attendance_date},
+            })
+
+            
+            .done(function(response){
+                var json_data=JSON.parse(response);
+                //console.log(json_data)
+                //Displaying Attendance Date Input and Students Attendance
+                var div_data="<div class='form-group'><label>Student Attendance: </label></div>"
+                div_data+="<div class='form-group'><div class='row'>"
+
+                for(key in json_data)
+                {
+                    div_data+="<div class='col-lg-3'><div class='form-check'>";
+
+                    div_data+="<label class='form-check-label'>"+ json_data[key]['name']+" </label> ";
+                    
+                    // Displaying Present and Absent
+
+                    if(json_data[key]['status'])
+                    {
+                        div_data+="<b>[ Present ]</b>";
+                    }
+                    else
+                    {
+                        div_data+="<b>[ Absent ]</b>";
+                    }
+                    //Displaying Present and Absent Ends Here
+                    
+                    div_data+="</div></div> ";
+                }
+                div_data+="</div></div>";
+                
+                $("#student_data").html(div_data);
+            })
+            .fail(function(){
+                alert("Error in Fetching Students.")
+            })
+        })
+    })
+</script>
+{% endblock custom_js %}
